@@ -1,0 +1,18 @@
+---
+controllers:
+  - GeoDasheditorControllerModalWelcome.js
+directives:
+  - geodasheditorModalWelcome.js
+templates:
+  - modal_welcome_geodasheditor.tpl.html
+less:
+  - geodasheditor_welcome.less
+modals:
+  - name: geodasheditor_welcome
+    ui:
+      mainClass: ""
+      tabs:
+        - target: modal-geodasheditor-welcome-intro
+          label: Introduction
+        - target: modal-geodasheditor-welcome-about
+          label: About

@@ -1,0 +1,101 @@
+---
+controllers:
+  - controller_sidebar_geodasheditor.js
+  - controller_modal_edit_field.js
+  - controller_modal_edit_object.js
+  - GeoDashControllerModalDashboardSecurity.js
+  - GeoDashControllerModalDashboardConfig.js
+directives:
+  - geodashDashboardEditor.js
+  - geodashModalEditField.js
+  - geodashModalEditObject.js
+  - geodashModalDashboardConfig.js
+  - geodashModalDashboardSecurity.js
+templates:
+  - dashboard_editor.tpl.html
+  - modal_edit_field.tpl.html
+  - modal_edit_object.tpl.html
+  - geodash_modal_dashboard_config.tpl.html
+  - geodash_modal_dashboard_security.tpl.html
+less:
+  - sidebar.less
+  - sidebar-toggle.less
+modals:
+  - name: dashboard_config
+    ui:
+      mainClass: ""
+      tabs:
+        - target: modal-dashboard-config-projects
+          label: Projects
+        - target: modal-dashboard-config-plugins
+          label: Plugins
+        - target: modal-dashboard-config-directives
+          label: Directives
+        - target: modal-dashboard-config-templates
+          label: Templates
+        - target: modal-dashboard-config-filters
+          label: Filters
+        - target: modal-dashboard-config-yaml
+          label: YAML
+        - target: modal-dashboard-config-json
+          label: JSON
+  - name: dashboard_security
+    ui:
+      mainClass: ""
+      tabs:
+        - target: modal-dashboard-security-pane-yaml
+          label: YAML
+        - target: modal-dashboard-security-pane-json
+          label: JSON
+  - name: edit_field
+    ui:
+      mainClass: ""
+      tabs:
+        - target: modal-edit-field-pane-input
+          label: Input
+        - target: modal-edit-field-pane-yaml
+          label: YAML
+        - target: modal-edit-field-pane-json
+          label: JSON
+    config:
+      that:
+        id: geodash-modal-edit-field
+      workspace:
+        workspace: modaleditfield_workspace
+        workspace_flat: modaleditfield_workspace_flat
+      schema:
+        schema: modaleditfield_schema
+        schema_flat: modaleditfield_schema_flat
+      edit:
+        target: geodash-modal-edit-object
+      save:
+        target: geodash-sidebar-right
+        fields:
+          workspace: modaleditfield_workspace
+          workspace_flat: modaleditfield_workspace_flat
+  - name: edit_object
+    ui:
+      mainClass: ""
+      tabs:
+        - target: modal-edit-object-pane-input
+          label: Input
+        - target: modal-edit-object-pane-yaml
+          label: YAML
+        - target: modal-edit-object-pane-json
+          label: JSON
+    config:
+      that:
+        id: geodash-modal-edit-object
+      workspace:
+        workspace: modaleditobject_workspace
+        workspace_flat: modaleditobject_workspace_flat
+      schema:
+        schema: modaleditobject_schema
+        schema_flat: modaleditobject_schema_flat
+      back:
+        target: geodash-modal-edit-field
+      save:
+        target: geodash-modal-edit-field
+        fields:
+          modaleditfield_workspace: modaleditobject_workspace
+          modaleditfield_workspace_flat: modaleditobject_workspace_flat

@@ -1,0 +1,73 @@
+@import "variables.less";
+
+.geodasheditor-welcome {
+
+  a {
+    font-family: @geodasheditor-welcome-body-font-family;
+  }
+
+  a.btn-primary:hover, a.btn-primary:focus {
+
+
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+  }
+
+  .tab-pane {
+
+    .welcome-body {
+      font-family: @geodasheditor-welcome-body-font-family;
+      font-size: @geodasheditor-welcome-body-font-size;
+    }
+
+    h3.welcome-body {
+      font-family: @geodasheditor-welcome-body-font-family;
+      font-size: @geodasheditor-welcome-body-font-size-h3;
+
+    }
+
+    .input-group {
+      width: 400px;
+    }
+
+    .input-group-addon {
+      font-family: @geodasheditor-welcome-select-font-family;
+      font-size: @geodasheditor-welcome-select-dropdown-font-size;
+
+    }
+
+    .input-group-addon.btn-clear {
+      color: #fff;
+      background-color: #d9534f;
+      border-color: #d43f3a;
+    }
+
+    .input-group-addon.btn-clear:hover, .input-group-addon.btn-clear:focus, .input-group-addon.btn-clear.focus {
+      color: #fff;
+      background-color: #c9302c;
+      border-color: #ac2925;
+    }
+
+    .select2-container {
+      height: @geodasheditor-welcome-select-dropdown-height !important;
+    }
+
+    .select2-container .select2-selection--single {
+      height: @geodasheditor-welcome-select-dropdown-height !important;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+    }
+
+    .select2-selection__rendered {
+      font-size: @geodasheditor-welcome-select-dropdown-font-size;
+      line-height: @geodasheditor-welcome-select-dropdown-height !important;
+    }
+
+  }
+
+}
+
+.geodasheditor-welcome-select-dropdown {
+    z-index: @geodasheditor-welcome-select-dropdown-z-index;
+}

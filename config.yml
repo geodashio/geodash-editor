@@ -1,0 +1,9 @@
+---
+name: "geodasheditor"
+version: "0.0.1"
+description: "GeoDash Editor 0.0.1"
+path:
+  geodash: "./src/geodasheditor"
+plugins:
+  - geodasheditor_sidebar
+  - geodasheditor_welcome

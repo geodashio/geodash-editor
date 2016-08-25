@@ -1,0 +1,233 @@
+<div
+  id="geodash-modal-edit-field"
+  class="geodash-controller geodash-controller-modal geodash-modal modal fade geodash-edit-field"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel">
+  <div id="geodash-edit-field" class="modal-dialog geodash-responsive" data-backdrop="static" role="document">
+    <div
+      ng-if="showModal(path)"
+      class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-hidden="true" ng-click="go_back()"><i class="fa fa-times"></i></button>
+        <h4 id="myModalLabel" class="modal-title"><span>Edit</span><span ng-repeat-start="x in breadcrumbs track by $index"> / </span><span ng-if="$last" ng-bind-html="x.content"></span><a ng-repeat-end ng-if="! $last" ng-click="rollback($index)" role="button" ng-bind-html="x.content"></a></h4>
+      </div>
+      <div class="modal-body">
+        <div geodash-tabs></div>
+        <div class="tab-content">
+          <div
+            id="modal-edit-field-pane-input"
+            role="tabpanel"
+            class="tab-pane fade"
+            style="padding: 10px;">
+            <div
+              ng-if="schema | extract : schemapath : 'type' | inArray: ['text', 'string', 'markdown', 'md']">
+              <textarea
+                id="modal-edit-field-{{ path_flat }}"
+                name="modal-edit-field-{{ path_flat }}"
+                class="form-control"
+                placeholder="{{ schema | extract : schemapath : 'placeholder' }}"
+                rows="15"
+                data-geodash-field-type="{{ schema | extract : schemapath : 'type' }}"
+                ng-required="schema | extract : schemapath : 'required'"
+                style="max-width: 100%;"
+                ng-model="value_edit_field"
+                ng-change="validateModalField()"></textarea>
+            </div>
+            <div
+              ng-if="schema | extract : schemapath : 'type' | inArray: ['textarray', 'stringarray']">
+              <div class="input-group">
+                <input
+                  id="editor-field-{{ path_flat }}-backend"
+                  name="editor-field-{{ path_flat }}-backend"
+                  type="text"
+                  class="form-control"
+                  style="display:none;">
+                <div
+                  class="input-group-addon btn btn-primary"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  ng-attr-title="{{ schema | extract : schemapath : 'description' }}">
+                  <i class="fa fa-info-circle"></i>
+                </div>
+                <div
+                  id="editor-field-{{ path_flat }}-label"
+                  name="editor-field-{{ path_flat }}-label"
+                  class="input-group-addon"
+                  ng-bind-html="schema | extract : schemapath : 'label'">
+                </div>
+                <input
+                  id="editor-field-{{ path_flat }}"
+                  name="editor-field-{{ path_flat }}"
+                  type="text"
+                  class="typeahead form-control"
+                  style="height: auto;"
+                  data-geodash-field-type="{{ schema | extract : schemapath : 'type' }}"
+                  ng-required="schema | extract : schemapath : 'required'"
+                  aria-describedby="editor-field-{{ path_flat }}-label"
+                  data-initial-data="{{ schema | extract : schemapath : 'source' }}"
+                  data-backend="editor-field-{{ path_flat }}-backend"
+                  data-template-empty="<div class=&quot;alert alert-danger empty-message&quot;>Unable to find value</div>"
+                  ng-keyup="keyUpOnField($event, path, path_flat)">
+                <div
+                  class="input-group-addon btn btn-primary btn-show-options"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Show Options."
+                  ng-click="showOptions($event, '#editor-field-'+path_flat)">
+                  <i class="fa fa-chevron-down"></i>
+                </div>
+                <div
+                  class="input-group-addon btn btn-success btn-add"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Prepend to list of layers."
+                  ng-click="prependToField($event)">
+                  <i class="fa fa-plus"></i>
+                </div>
+                <div
+                  class="input-group-addon btn btn-danger btn-clear"
+                  data-target="#editor-field-{{ path_flat }}"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Clear new layer text.">
+                  <i class="fa fa-times"></i>
+                </div>
+              </div>
+              <br>
+              <div
+                ng-repeat="x in workspace | extract : path track by $index"
+                class="input-group"
+                style="margin-bottom: 4px;">
+                <div
+                  class="input-group-addon btn btn-default"
+                  style="font-weight: bold;"
+                  ng-bind-html="$index">
+                </div>
+                <div
+                  ng-class="$first ? 'input-group-addon btn btn-default' : 'input-group-addon btn btn-primary'"
+                  ng-disabled="$first"
+                  ng-click="up($event, $index)">
+                  <i class="fa fa-arrow-up"></i>
+                </div>
+                <div
+                  ng-class="$last ? 'input-group-addon btn btn-default' : 'input-group-addon btn btn-primary'"
+                  ng-disabled="$last"
+                  ng-click="down($event, $index)">
+                  <i class="fa fa-arrow-down"></i>
+                </div>
+                <input
+                  id="editor-field-{{ path_flat }}-{{ $index }}"
+                  name="editor-field-{{ path_flat }}-{{ $index }}"
+                  type="text"
+                  class="form-control"
+                  ng-value="x">
+                <div
+                  class="input-group-addon btn btn-danger btn-clear"
+                  ng-click="subtractFromField($event, $index)">
+                  <i class="fa fa-times"></i>
+                </div>
+              </div>
+            </div>
+            <div
+              ng-if="schema | extract : schemapath : 'type' | inArray: ['objectarray', 'objarray']">
+              <div>
+                <div
+                  class="btn btn-primary"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  ng-attr-title="{{ schema | extract : schemapath : 'description' }}">
+                  <i class="fa fa-info-circle"></i>
+                </div>
+                <div
+                  class="btn btn-success"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Prepend to list."
+                  ng-click="add_object()">
+                  <i class="fa fa-plus"></i>
+                </div>
+              </div>
+              <br>
+              <div
+                ng-repeat="x in workspace | extract : path track by $index"
+                class="input-group"
+                style="margin-bottom: 4px;">
+                <div
+                  class="input-group-addon btn btn-default"
+                  style="font-weight: bold;"
+                  ng-bind-html="$index">
+                </div>
+                <div
+                  ng-class="$first ? 'input-group-addon btn btn-default' : 'input-group-addon btn btn-primary'"
+                  ng-disabled="$first"
+                  ng-click="up($event, $index)">
+                  <i class="fa fa-arrow-up"></i>
+                </div>
+                <div
+                  ng-class="$last ? 'input-group-addon btn btn-default' : 'input-group-addon btn btn-primary'"
+                  ng-disabled="$last"
+                  ng-click="down($event, $index)">
+                  <i class="fa fa-arrow-down"></i>
+                </div>
+                <span
+                  id="editor-field-{{ path_flat }}-{{ $index }}"
+                  name="editor-field-{{ path_flat }}-{{ $index }}"
+                  type="text"
+                  class="form-control btn btn-primary input-group-addon"
+                  style="line-height: 1.42857143;"
+                  ng-bind-html="x.id | default_if_undefined : (x | json)"
+                  ng-click="edit_object($index)"></span>
+                <a
+                  class="input-group-addon btn btn-primary"
+                  href="#"
+                  ng-click="edit_object($index)">
+                  <i class="fa fa-pencil-square-o "></i>
+                </a>
+                <div
+                  class="input-group-addon btn btn-danger btn-clear"
+                  ng-click="subtractFromField($event, $index)">
+                  <i class="fa fa-times"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            id="modal-edit-field-pane-yaml"
+            class="tab-pane fade"
+            role="tabpanel"
+            style="padding: 10px;">
+            <h4 ng-bind-html="schema | extract : path : 'schema' : 'verbose_singular' | default_if_undefined : 'Field' | append : ' as YAML'"></h4>
+            <pre style="word-wrap: break-word; white-space: pre-wrap;">{{ workspace | extract : path | yaml : 8 }}</pre>
+          </div>
+          <div
+            id="modal-edit-field-pane-json"
+            class="tab-pane fade"
+            role="tabpanel"
+            style="padding: 10px;">
+            <h4 ng-bind-html="schema | extract : path : 'schema' : 'verbose_singular' | default_if_undefined : 'Field' | append : ' as JSON'"></h4>
+            <pre style="word-wrap: break-word; white-space: pre-wrap;">{{ workspace | extract : path | json }}</pre>
+          </div>
+        </div>
+        <hr>
+        <div
+          class="btn btn-danger btn-clear"
+          data-target="#modal-edit-field-{{ path_flat }}, #editor-field-{{ path_flat }}">
+          <i class="fa fa-times"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-success"
+          ng-bind-html="save_label()"
+          ng-click="save_object()"></button>
+        <button
+          type="button"
+          class="btn btn-default"
+          ng-bind-html="back_label()"
+          ng-click="go_back()"></button>
+      </div>
+    </div>
+  </div>
+</div>

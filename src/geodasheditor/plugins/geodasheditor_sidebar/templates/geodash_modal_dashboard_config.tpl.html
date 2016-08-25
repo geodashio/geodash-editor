@@ -1,0 +1,209 @@
+<div
+  class="geodash-controller geodash-controller-modal geodash-modal modal fade geodash-dashboard-config"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel">
+  <div class="modal-dialog geodash-responsive" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button geodash-btn-close></button>
+        <h4 class="modal-title" id="myModalLabel">Configuration / {{ workspace.config.title }}</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div geodash-tabs></div>
+          <div class="tab-content">
+            <div
+              id="modal-dashboard-config-projects"
+              class="tab-pane fade in active"
+              role="tabpanel"
+              style="padding: 10px;">
+              <h3>Projects</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Version</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="project in meta.projects track by $index">
+                    <th scope="row" ng-bind-html="$index"></th>
+                    <td ng-bind-html="project.name"></td>
+                    <td ng-bind-html="project.version"></td>
+                    <td ng-bind-html="project.description"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="modal-dashboard-config-plugins"
+              class="tab-pane fade in active"
+              role="tabpanel"
+              style="padding: 10px;">
+              <h3>Plugins</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Name</th>
+                    <th>Version</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="plugin in meta.plugins track by $index">
+                    <th scope="row" ng-bind-html="$index"></th>
+                    <td ng-bind-html="plugin.project"></td>
+                    <td ng-bind-html="plugin.id"></td>
+                    <td ng-bind-html="plugin.version"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="modal-dashboard-config-directives"
+              class="tab-pane fade in active"
+              role="tabpanel"
+              style="padding: 10px;">
+              <h3>Directives</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="directive in meta.directives track by $index">
+                    <th scope="row" ng-bind-html="$index"></th>
+                    <td ng-bind-html="directive"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="modal-dashboard-config-templates"
+              class="tab-pane fade in active"
+              role="tabpanel"
+              style="padding: 10px;">
+              <h3>Templates</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="template in meta.templates track by $index">
+                    <th scope="row" ng-bind-html="$index"></th>
+                    <td ng-bind-html="template"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="modal-dashboard-config-filters"
+              class="tab-pane fade in active"
+              role="tabpanel"
+              style="padding: 10px;">
+              <h3>Filters</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="filter in meta.filters track by $index">
+                    <th scope="row" ng-bind-html="$index"></th>
+                    <td ng-bind-html="filter"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="modal-dashboard-config-yaml"
+              class="tab-pane fade"
+              role="tabpanel"
+              style="padding: 10px;">
+              <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                  <div class="navbar-header">
+                    <button
+                      type="button"
+                      class="collapsed navbar-toggle"
+                      data-toggle="collapse"
+                      data-target="#geodash-config-yaml-navbar-collapse"
+                      aria-expanded="false">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">
+                      <p class="navbar-text" style="color:rgb(85,85,85);font-size:24px;">Dashboard Configration as YAML</p>
+                    </div>
+                  </div>
+                  <div class="collapse navbar-collapse" id="geodash-config-yaml-navbar-collapse">
+                    <div class="navbar-form navbar-right">
+                      <a class="btn btn-primary" data-toggle="collapse" data-target="#geodash-config-yaml-preview">Show/Hide</a>
+                      <a class="btn btn-primary" href="/api/dashboard/config/geodash_dashboard_{{ workspace.config.slug}}.yml" target="_blank">Download</a>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+              <pre
+                id="geodash-config-yaml-preview"
+                class="collapse"
+                style="word-wrap: break-word; white-space: pre-wrap;">{{ workspace.config | yaml : 8 }}</pre>
+            </div>
+            <div
+              id="modal-dashboard-config-json"
+              class="tab-pane fade"
+              role="tabpanel"
+              style="padding: 10px;">
+              <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                  <div class="navbar-header">
+                    <button
+                      type="button"
+                      class="collapsed navbar-toggle"
+                      data-toggle="collapse"
+                      data-target="#geodash-config-json-navbar-collapse"
+                      aria-expanded="false">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">
+                      <p class="navbar-text" style="color:rgb(85,85,85);font-size:24px;">Dashboard Configration as JSON</p>
+                    </div>
+                  </div>
+                  <div class="collapse navbar-collapse" id="geodash-config-json-navbar-collapse">
+                    <div class="navbar-form navbar-right">
+                      <a class="btn btn-primary" data-toggle="collapse" data-target="#geodash-config-json-preview">Show/Hide</a>
+                      <a class="btn btn-primary" href="/api/dashboard/config/geodash_dashboard_{{ workspace.config.slug }}.json" target="_blank">Download</a>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+              <pre
+                id="geodash-config-json-preview"
+                class="collapse"
+                style="word-wrap: break-word; white-space: pre-wrap;">{{ workspace.config | json }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

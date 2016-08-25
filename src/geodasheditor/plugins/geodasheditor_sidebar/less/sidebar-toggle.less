@@ -1,0 +1,68 @@
+@import "variables.less";
+
+.geodash-map-sidebar-toggle {
+  /* Layout */
+  position: absolute;
+  top: ~"calc(50% - 50px)";
+  width: 40px;
+  height: 100px;
+  z-index: @geodash-map-control-z-index;
+
+  /* Colors & Background */
+  color: #fff;
+  background-color: #337ab7;
+
+  /* Border, Padding, & Margin */
+  padding: 0;
+  border: 0;
+
+  /* Font */
+  font-size: 24px;
+  line-height: 100px;
+}
+
+.geodash-map-sidebar-toggle.geodash-map-sidebar-toggle-left {
+
+  left: 0px;
+  border-radius: 0px 6px 6px 0px;
+
+  .icon-arrow-lt {
+    display: none;
+  }
+  .icon-arrow-gt {
+    display: block;
+  }
+}
+
+.geodash-map-sidebar-toggle.geodash-map-sidebar-toggle-right {
+
+  right: 0px;
+  border-radius: 6px 0px 0px 6px;
+
+  .icon-arrow-gt {
+    display: none;
+  }
+  .icon-arrow-lt {
+    display: block;
+  }
+}
+
+.geodash-map-sidebar-toggle.geodash-map-sidebar-toggle-left.sidebar-open {
+  .icon-arrow-lt {
+    display: block;
+  }
+
+  .icon-arrow-gt {
+    display: none;
+  }
+}
+
+.geodash-map-sidebar-toggle.geodash-map-sidebar-toggle-right.sidebar-open {
+  .icon-arrow-gt {
+    display: block;
+  }
+
+  .icon-arrow-lt {
+    display: none;
+  }
+}

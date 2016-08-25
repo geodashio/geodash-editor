@@ -1,0 +1,326 @@
+<div
+  class="geodash-dashboard-editor">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="collapsed navbar-toggle"
+          data-toggle="collapse"
+          data-target="#geodash-editor-navbar-collapse"
+          aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="navbar-brand">
+          <p class="navbar-text" style="color:rgb(85,85,85);font-size:30px;">GeoDash Editor</p>
+        </div>
+      </div>
+      <div class="collapse navbar-collapse" id="geodash-editor-navbar-collapse">
+        <form class="navbar-form navbar-right">
+          <button
+            type="button"
+            class="btn btn-success"
+            ng-click="saveConfig()"
+            ng-disabled="'change_geodashdashboard' | inArray : perms | not"
+          >Save</button>
+          <button
+            type="button"
+            class="btn btn-success"
+            ng-click="saveAsConfig()"
+          >Save As ...</button>
+          <button type="button" class="btn btn-default">Reset</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <form
+    class="form-horizontal simple-form"
+    style="margin: 10px;"
+    novalidate>
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+      <li
+        ng-repeat="pane in editor.panes track by $index"
+        ng-init="paneIndex = $index"
+        role="presentation"
+        ng-class="$first ? 'active' : ''">
+        <a
+          href="#{{ pane.id }}"
+          aria-controls="{{ pane.id }}"
+          role="tab"
+          data-toggle="tab"
+          style="padding-left:8px; padding-right: 8px; height: 62px;"
+          ng-bind-html=" pane.label | md2html"></a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div
+        ng-class="$first ? 'tab-pane fade in active' : 'tab-pane fade'"
+        ng-repeat="pane in fields_by_pane track by $index"
+        ng-init="paneIndex = $index"
+        id="{{ pane.id }}"
+        role="tabpanel"
+        style="padding: 10px;">
+        <div
+          ng-repeat="field in pane.fields track by $index"
+          ng-init="field_flat = (field | replace : '.' : '__')"
+          ng-init="fieldIndex = $index"
+          class="form-group"
+          style="margin:0; padding-top: 10px; padding-bottom: 10px;">
+          <div
+              ng-if="schema | extract : field : 'type' | inArray: ['text', 'string', 'markdown', 'md']">
+            <label
+              for="editor-field-{{ field_flat }}"
+              class="col-sm-3 control-label"
+              ng-bind-html="schema | extract : field : 'label'"></label>
+            <div class="col-sm-9">
+              <div
+                ng-if="schema | extract : field : 'multiline' | default_if_undefined: 'false' | inArray: [false, 'false', 'no', 0]"
+                class="input-group">
+                <div geodash-btn-info info="{{ schema | extract : field : 'description' }}"></div>
+                <input
+                  id="editor-field-{{ field_flat }}"
+                  name="editor-field-{{ field_flat }}"
+                  type="text"
+                  class="form-control"
+                  placeholder="{{ schema | extract : field : 'placeholder' }}"
+                  data-geodash-field-type="{{ schema | extract : field : 'type' }}"
+                  ng-required="schema | extract : field : 'required'"
+                  ng-value="workspace_flat | extract : field_flat"
+                  ng-model="workspace_flat[field_flat]"
+                  ng-change="validateField(field_flat)">
+                <div
+                  ng-if="schema | extract : field : 'source' | ternary_defined: true : false"
+                  class="input-group-addon btn btn-primary btn-show-options"
+                  data-toggle="tooltip"
+                  data-placement="bottom"
+                  title="Show Options."
+                  ng-click="showOptions($event, '#editor-field-' + field_flat)">
+                  <i class="fa fa-chevron-down"></i>
+                </div>
+                <div
+                  geodash-btn mode="edit"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Edit field"
+                  tooltip-placement="bottom"
+                  class="geodash-intent"
+                  data-intent-name="showModal"
+                  data-intent-data="{{ html5data('showModal', 'geodash-modal-edit-field', field) }}"
+                  data-intent-ctrl="{{ config.that.id }}"></div>
+                <div
+                  geodash-btn mode="clear"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Clear field"
+                  tooltip-placement="bottom"></div>
+              </div>
+              <div
+                ng-if="schema | extract : field : 'multiline' | default_if_undefined: 'false' | parseTrue"
+                class="input-group">
+                <div geodash-btn-info info="{{ schema | extract : field : 'description' }}"></div>
+                <textarea
+                  id="editor-field-{{ field_flat }}"
+                  name="editor-field-{{ field_flat }}"
+                  class="form-control"
+                  placeholder="{{ schema | extract : field : 'placeholder' }}"
+                  rows="3"
+                  data-geodash-field-type="{{ schema | extract : field : 'type' }}"
+                  ng-required="schema | extract : field : 'required'"
+                  style="max-width: 100%;"
+                  ng-model="workspace_flat[field_flat]"
+                  ng-change="validateField(field_flat)"
+                  ng-bind-html="workspace_flat | extract : field_flat"></textarea>
+                <a
+                  class="geodash-intent input-group-addon btn btn-primary btn-edit"
+                  href="#"
+                  data-intent-name="showModal"
+                  data-intent-data="{{ html5data('showModal', 'geodash-modal-edit-field', field) }}"
+                  data-intent-ctrl="{{ config.that.id }}">
+                  <i class="fa fa-pencil-square-o "></i>
+                </a>
+                <div
+                  geodash-btn mode="clear"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Clear field"
+                  tooltip-placement="bottom"></div>
+              </div>
+            </div>
+            <div ng-show="form.$submitted || form.{{ field }}.$touched">
+              <span ng-show="form.{{ field }}.$error.required">{{ schema | extract : field : 'label' }} is required.</span>
+            </div>
+          </div>
+          <div
+            ng-if="schema | extract : field : 'type' | inArray: ['int', 'integer']">
+            <label
+              for="editor-field-{{ field_flat }}"
+              class="col-sm-3 control-label"
+              ng-bind-html="schema | extract : field : 'label'"></label>
+            <div class="col-sm-9 input-group">
+              <div geodash-btn-info info="{{ schema | extract : field : 'description' }}"></div>
+              <input
+                id="editor-field-{{ field_flat }}"
+                name="editor-field-{{ field_flat }}"
+                type="number"
+                class="form-control"
+                placeholder="{{ schema | extract : field : 'placeholder' }}"
+                data-geodash-field-type="{{ schema | extract : field : 'type' }}"
+                ng-required="schema | extract : field : 'required'"
+                ng-attr-min="{{ schema | extract : field : 'minValue' | default_if_undefined: '' }}"
+                ng-attr-max="{{ schema | extract : field : 'maxValue' | default_if_undefined: '' }}"
+                ng-value="workspace_flat | extract : field_flat"
+                ng-model="workspace_flat[field_flat]"
+                ng-change="validateField(field_flat)">
+              <div
+                geodash-btn mode="clear"
+                target="#editor-field-{{ field_flat }}"
+                info="Clear field"
+                tooltip-placement="bottom"></div>
+            </div>
+            <div ng-show="form.$submitted || form.{{ field }}.$touched">
+              <span ng-show="form.{{ field }}.$error.required">{{ schema | extract : field : 'label' }} is required.</span>
+            </div>
+          </div>
+          <div
+            ng-if="schema | extract : field : 'type' | inArray: ['boolean', 'checkbox']">
+            <label
+              for="editor-field-{{ field_flat }}"
+              class="col-sm-3 control-label"
+              ng-bind-html="schema | extract : field : 'label'"></label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <div geodash-btn-info info="{{ schema | extract : field : 'description' }}"></div>
+                <input
+                  id="editor-field-{{ field_flat }}"
+                  name="editor-field-{{ field_flat }}"
+                  type="text"
+                  class="form-control"
+                  ng-style="{'font-weight': 'bold', 'color': ((workspace_flat | extract : field_flat | parseTrue ) ? 'green' : 'red') }"
+                  placeholder="{{ schema | extract : field : 'placeholder' }}"
+                  data-geodash-field-type="{{ schema | extract : field : 'type' }}"
+                  ng-required="schema | extract : field : 'required'"
+                  ng-value="workspace_flat | extract : field_flat"
+                  ng-model="workspace_flat[field_flat]"
+                  ng-change="validateField(field_flat)"
+                  disabled>
+                <div
+                  geodash-btn mode="on"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Set to true"
+                  tooltip-placement="bottom"></div>
+                <div
+                  geodash-btn mode="off"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Set to false"
+                  tooltip-placement="bottom"></div>
+                <div
+                  geodash-btn mode="clear"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Clear field"
+                  tooltip-placement="bottom"></div>
+              </div>
+            </div>
+          </div>
+          <div
+            ng-if="schema | extract : field : 'type' | inArray: ['stringarray', 'textarray']">
+            <label
+              for="editor-field-{{ field_flat }}"
+              class="col-sm-3 control-label"
+              ng-bind-html="schema | extract : field : 'label'"></label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <div geodash-btn-info info="{{ schema | extract : field : 'description' }}"></div>
+                <div class="form-control" style="height: auto;min-height: 28px;max-height: 70px;overflow-y:scroll;">
+                  <span
+                    ng-repeat="x in workspace | extract : field track by $index"
+                    style="width: 230px; height: 20px; text-overflow: ellipsis; display: block;white-space: nowrap; overflow: hidden;"
+                    ng-bind-html="x">
+                  </span>
+                </div>
+                <a
+                  class="geodash-intent input-group-addon btn btn-primary btn-edit"
+                  href="#"
+                  data-intent-name="showModal"
+                  data-intent-data="{{ html5data('showModal', 'geodash-modal-edit-field', field) }}"
+                  data-intent-ctrl="{{ config.that.id }}">
+                  <i class="fa fa-pencil-square-o "></i>
+                </a>
+                <div
+                  geodash-btn mode="clear"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Clear field"
+                  tooltip-placement="bottom"></div>
+              </div>
+            </div>
+          </div>
+          <div
+            ng-if="schema | extract : field : 'type' | inArray: ['objectarray', 'objarray']">
+            <label
+              for="editor-field-{{ field_flat }}"
+              class="col-sm-3 control-label"
+              ng-bind-html="schema | extract : field : 'label'"></label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <div geodash-btn-info info="{{ schema | extract : field : 'description' }}"></div>
+                <div
+                  class="form-control"
+                  style="height: auto; max-width: 280px;min-height: 28px;max-height: 70px;overflow-y: scroll;"
+                  disabled>
+                  <span
+                    ng-repeat="x in workspace| extract : field track by $index"
+                    class=""
+                    style="width: 230px; height: 20px; text-overflow: ellipsis; display: block;white-space: nowrap; overflow: hidden;"
+                    ng-bind-html="x.title + ' ('+x.id+')'">
+                  </span>
+                </div>
+                <div
+                  geodash-btn mode="edit"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Edit field"
+                  tooltip-placement="bottom"
+                  class="geodash-intent"
+                  data-intent-name="showModal"
+                  data-intent-data="{{ html5data('showModal', 'geodash-modal-edit-field', field) }}"
+                  data-intent-ctrl="{{ config.that.id }}"></div>
+                <div
+                  geodash-btn mode="clear"
+                  target="#editor-field-{{ field_flat }}"
+                  info="Clear field"
+                  tooltip-placement="bottom"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-sm-9">
+        <button
+          type="button"
+          class="btn btn-success"
+          ng-click="saveConfig()"
+          ng-disabled="'change_geodashdashboard' | inArray : perms | not"
+        >Save</button>
+        <button
+          type="button"
+          class="btn btn-success"
+          ng-click="saveAsConfig()"
+        >Save As ...</button>
+        <button
+          type="button"
+          class="btn btn-default">Reset</button>
+        <a
+          class="geodash-intent btn btn-primary"
+          data-intent-name="showModal"
+          data-intent-data="{{ config.html5data.modal_dashboard_config }}"
+          data-intent-ctrl="{{ config.that.id }}">Config</a>
+        <a
+          class="geodash-intent btn btn-primary"
+          data-intent-name="showModal"
+          data-intent-data="{{ config.html5data.modal_dashboard_security }}"
+          data-intent-ctrl="{{ config.that.id }}">Security</a>
+      </div>
+    </div>
+  </form>
+</div>

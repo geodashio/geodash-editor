@@ -1,0 +1,33 @@
+{
+  "name": "geodasheditor-static",
+  "version": "0.0.1",
+  "author": "GeoDash Developers",
+  "description": "Static code and assets for GeoDash Editor 1.x",
+  "contributors": [
+    {
+      "name": "Patrick Dufour"
+    }
+  ],
+  "scripts": {
+    "test": "jshint **.js"
+  },
+  "license": "BSD",
+  "private": "false",
+  "devDependencies": {
+    "del": "*",
+    "merge": "*",
+    "gulp": "^3.9.0",
+    "gulp-util": "*",
+    "gulp-angular-templatecache": "^1.8.0",
+    "gulp-concat": "*",
+    "gulp-jshint": "*",
+    "gulp-less": "*",
+    "gulp-minify": "*",
+    "gulp-rename": "*",
+    "gulp-uglify": "*",
+    "path": "*",
+    "yamljs": "^0.2.7",
+    "yargs": "*",
+    "expand-home-dir": "*"
+  }
+}
